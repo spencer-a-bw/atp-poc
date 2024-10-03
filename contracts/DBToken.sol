@@ -24,7 +24,7 @@ contract DBToken is ERC20, ERC20Burnable, Ownable {
     address private contractOwner;
     address private issuingAgent;
     
-    // Deployment and ERC20 Initialization
+    // Deployment and ERC20 registration
     constructor(
         string memory _tokenName, 
         string memory _tokenSymbol, 
@@ -38,9 +38,23 @@ contract DBToken is ERC20, ERC20Burnable, Ownable {
         contractOwner = msg.sender;
     }
 
-    // Mint
+    // Mint ERC20
     function mint() public onlyOwner returns(bool) {
         _mint(contractOwner, initialSupply);
         return true;
+    }
+
+    // Transfer ERC20
+    function transaction(
+        address _toAddress,
+        uint256 _amount
+    ) public returns(bool) {    
+        _transfer(msg.sender, _toAddress, _amount);
+        return true;
+    }
+
+    // View balance of public address
+    function viewBalance(address _address) public view returns (uint256) {
+        return balanceOf(_address); 
     }
 }
