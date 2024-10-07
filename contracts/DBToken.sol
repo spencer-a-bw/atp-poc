@@ -19,12 +19,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract DBToken is ERC20, ERC20Burnable, Ownable {
 
     mapping(address => bool) public generalWhitelist;
-    
-    string public tokenName;
-    string public tokenSymbol;
-    uint256 public initialSupply;
-    address private contractOwner;
-    address private issuingAgent;
 
     modifier onlyWhitelist(address _passToAddress) {
         require(generalWhitelist[msg.sender], "SENDER_NOT_IN_WHITELIST");
@@ -40,16 +34,7 @@ contract DBToken is ERC20, ERC20Burnable, Ownable {
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
     {
-        tokenName = _tokenName;
-        tokenSymbol = _tokenSymbol;
-        initialSupply = _initialSupply;
-        contractOwner = msg.sender;
-    }
-
-    // Mint ERC20
-    function mint() public onlyOwner returns(bool) {
-        _mint(contractOwner, initialSupply);
-        return true;
+        _mint(msg.sender, _initialSupply);
     }
 
     // Add to whitelist
@@ -73,10 +58,5 @@ contract DBToken is ERC20, ERC20Burnable, Ownable {
     ) public onlyWhitelist(_toAddress) returns(bool) {    
         _transfer(msg.sender, _toAddress, _amount);
         return true;
-    }
-
-    // View balance of public address
-    function viewBalance(address _address) public view returns (uint256) {
-        return balanceOf(_address); 
     }
 }
