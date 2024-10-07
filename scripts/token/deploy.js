@@ -5,6 +5,9 @@ async function main() {
     await token.deployed();
   
     console.log("TokenizedBond deployed to:", token.address);
+    console.log(token.tokenName());
+    console.log(token.tokenSymbol());
+    console.log(token.initialSupply());
   }
   
   main()
