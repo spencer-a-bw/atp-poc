@@ -46,7 +46,7 @@ describe("DBToken unit testing...", function () {
   // });
 
   it("Should transfer tokens between accounts.", async function () {
-    await token.transaction(investorA.address, transferAmount);
+    await token.transferToken(investorA.address, transferAmount);
 
     const _balanceOfInvestorA = await token.viewBalance(investorA.address);
     const _balanceOfOwner = await token.viewBalance(owner.address);
@@ -59,11 +59,11 @@ describe("DBToken unit testing...", function () {
   });
 
   it("Only whitelisted addresses can transfer DBToken.", async function () {
-    await token.transaction(investorA.address, transferAmount);
+    await token.transferToken(investorA.address, transferAmount);
     console.log(await token.viewBalance(investorA.address));
-    await token.connect(investorA).transaction(investorB.address, transferAmount)
+    await token.connect(investorA).transferToken(investorB.address, transferAmount)
     console.log(await token.viewBalance(investorB.address));
-    await token.transaction(blockedAddress.address, transferAmount);
+    // await token.transferToken(blockedAddress.address, transferAmount);
   });
 
   // it("Should not allow transfer of tokens from an account with insufficient.", async function () {

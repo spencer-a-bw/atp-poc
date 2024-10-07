@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
 /** 
- * @title Digital Asset
+ * @title DB Token
  * @author Spencer-a Clarke
  * @notice ERC20 Smart Contract for Bank on Tech proof of concept
  * @dev --notes for dev--
