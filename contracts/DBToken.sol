@@ -18,6 +18,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract DBToken is ERC20, Ownable {
 
+    uint256 private correctSupply = 10 ** uint256(decimals());
+
     mapping(address => bool) public generalWhitelist;
 
     modifier onlyWhitelist(address _passToAddress) {
@@ -33,8 +35,8 @@ contract DBToken is ERC20, Ownable {
         uint256 _initialSupply)
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
-    {
-        _mint(msg.sender, _initialSupply);
+    { 
+        _mint(msg.sender, _initialSupply * uint256(correctSupply));
     }
 
     // Add to whitelist
@@ -56,7 +58,7 @@ contract DBToken is ERC20, Ownable {
         address _toAddress,
         uint256 _amount
     ) public onlyWhitelist(_toAddress) returns(bool) {    
-        _transfer(msg.sender, _toAddress, _amount);
+        _transfer(msg.sender, _toAddress, _amount * uint256(correctSupply));
         return true;
     }
 }
