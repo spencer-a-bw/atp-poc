@@ -40,7 +40,7 @@ contract Whitelist is Ownable {
 
     function whitelistFuncFrom(address _fromAddress) external view
     {
-    require(generalWhitelist[_fromAddress], "SENDER_NOT_IN_WHITELIST");
+        require(generalWhitelist[_fromAddress], "SENDER_NOT_IN_WHITELIST");
     }
 
     function whitelistFuncTo(address _toAddress) external view
