@@ -18,37 +18,37 @@ contract Whitelist is Ownable {
 
     mapping(address => bool) public generalWhitelist;
 
-    address[] public whitelist;
-
     constructor() Ownable() {
         addToWhitelist(msg.sender);
     }
 
-    // Add to whitelist
+    // Add public address to whitelist
     function addToWhitelist(address addAddress) 
     public onlyOwner
     {
        generalWhitelist[addAddress] = true;
     }
 
-    // Remove from whitelist
+    // Remove public address from whitelist
     function removeFromWhitelist(address removeAddress)
     public onlyOwner
     {
         generalWhitelist[removeAddress] = false;
     }
-
+    
+    // Ensure transaction sender is whitelisted
     function whitelistFuncFrom(address _fromAddress) external view
     {
         require(generalWhitelist[_fromAddress], "SENDER_NOT_IN_WHITELIST");
     }
 
+    // Ensure transaction recipient is whitelisted
     function whitelistFuncTo(address _toAddress) external view
     {
         require(generalWhitelist[_toAddress], "RECIPIENT_NOT_IN_WHITELIST");
     }
 
-    // Get mapping value
+    // Return mapping value
     function getWhitelist(address _address) public view returns(bool) {
         return generalWhitelist[_address];
     }

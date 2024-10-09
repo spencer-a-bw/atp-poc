@@ -12,7 +12,7 @@ describe("DBToken unit testing...", function () {
   beforeEach(async function () {
     dbToken = await ethers.getContractFactory("DBToken");
     [owner, issuingAgent, investorA, investorB] = await ethers.getSigners();
-    token = await dbToken.deploy(tokenName, tokenSymbol, initialSupply);
+    token = await dbToken.deploy(tokenName, tokenSymbol, initialSupply, );
     await token.deployed();
     await token.mint();
     console.log('Owner', owner.address);
@@ -42,16 +42,16 @@ describe("DBToken unit testing...", function () {
   // });
 
   it("Should transfer tokens between accounts.", async function () {
-    await token.transaction(investorA.address, transferAmount);
+    await token.transferToken(investorA.address, transferAmount);
 
-    const _balanceOfInvestorA = await token.viewBalance(investorA.address);
-    const _balanceOfOwner = await token.viewBalance(owner.address);
+    const _balanceOfInvestorA = await token.balanceOf(investorA.address);
+    const _balanceOfOwner = await token.balanceOf(owner.address);
 
     console.log("Investor A balance:", _balanceOfInvestorA);
     console.log("Owner balance:", _balanceOfOwner);
 
     expect(_balanceOfInvestorA.toNumber()).to.equal(transferAmount);
-    expect(_balanceOfOwner.toNumber()).to.equal(99900);
+    expect(_balanceOfOwner.toNumber()).to.equal(initialSupply - transferAmount);
   });
 
   // it("Should not allow transfer of tokens from an account with insufficient.", async function () {

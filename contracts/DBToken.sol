@@ -13,11 +13,11 @@
 pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "contracts/Whitelist.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Whitelist.sol";
 // import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DBToken is ERC20, Whitelist {
+contract DBToken is ERC20, Ownable {
 
     Whitelist public whitelistContract;
     uint256 private correctSupply = 10 ** uint256(decimals());
@@ -29,12 +29,13 @@ contract DBToken is ERC20, Whitelist {
         uint256 _initialSupply,
         address _whitelistContractAddress)
         ERC20(_tokenName, _tokenSymbol)
+        Ownable()
     {
         whitelistContract = Whitelist(_whitelistContractAddress);
         _mint(msg.sender, _initialSupply * uint256(correctSupply));
     }
 
-    // Whitelist modifier
+    // Whitelist modifiers to ensure transaction actors are whitelisted
     modifier onlyWhitelistedRecipient(address _passToAddress) {
         whitelistContract.whitelistFuncTo(_passToAddress); 
         _;
