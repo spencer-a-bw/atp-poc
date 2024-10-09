@@ -13,52 +13,49 @@
 pragma solidity ^0.8.26;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-// import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Whitelist.sol";
+// import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract DBToken is ERC20, Ownable {
 
+    Whitelist public whitelistContract;
     uint256 private correctSupply = 10 ** uint256(decimals());
 
-    mapping(address => bool) public generalWhitelist;
-
-    modifier onlyWhitelist(address _passToAddress) {
-        require(generalWhitelist[msg.sender], "SENDER_NOT_IN_WHITELIST");
-        require(generalWhitelist[_passToAddress], "RECIPIENT_NOT_IN_WHITELIST");
-        _;
-    }
-    
     // Deployment and ERC20 registration
     constructor(
-        string memory _tokenName, 
+        string memory _tokenName,   
         string memory _tokenSymbol, 
-        uint256 _initialSupply)
+        uint256 _initialSupply,
+        address _whitelistContractAddress)
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
-    { 
+    {
+        whitelistContract = Whitelist(_whitelistContractAddress);
         _mint(msg.sender, _initialSupply * uint256(correctSupply));
     }
 
-    // Add to whitelist
-    function addToWhitelist(address addAddress) 
-    public onlyOwner
-    {
-        generalWhitelist[addAddress] = true;
+    // Whitelist modifiers to ensure transaction actors are whitelisted
+    modifier onlyWhitelistedRecipient(address _passToAddress) {
+        whitelistContract.whitelistFuncTo(_passToAddress); 
+        _;
     }
 
-    // Remove from whitelist
-    function removeFromWhitelist(address removeAddress)
-    external onlyOwner
-    {
-        generalWhitelist[removeAddress] = false;
+    modifier onlyWhitelistedSender(address _passFromAddress) {
+        whitelistContract.whitelistFuncFrom(_passFromAddress); 
+        _;
     }
 
     // Transfer ERC20
     function transferToken(
         address _toAddress,
         uint256 _amount
-    ) public onlyWhitelist(_toAddress) returns(bool) {    
-        _transfer(msg.sender, _toAddress, _amount * uint256(correctSupply));
+    ) public 
+    onlyWhitelistedRecipient(_toAddress) 
+    onlyWhitelistedSender(msg.sender)
+    returns(bool) 
+    {    
+        _transfer(msg.sender, _toAddress, _amount  * uint256(correctSupply));
         return true;
     }
 }
