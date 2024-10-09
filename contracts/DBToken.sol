@@ -20,18 +20,20 @@ import "./Whitelist.sol";
 contract DBToken is ERC20, Ownable {
 
     Whitelist public whitelistContract;
+    address public whitelistAddress;
     uint256 private correctSupply = 10 ** uint256(decimals());
 
     // Deployment and ERC20 registration
     constructor(
         string memory _tokenName,   
         string memory _tokenSymbol, 
-        uint256 _initialSupply,
-        address _whitelistContractAddress)
+        uint256 _initialSupply
+        )
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
     {
-        whitelistContract = Whitelist(_whitelistContractAddress);
+        whitelistContract = Whitelist(deployNewWhitelist(msg.sender));
+        whitelistAddress = address(whitelistContract);
         _mint(msg.sender, _initialSupply * uint256(correctSupply));
     }
 
@@ -44,6 +46,12 @@ contract DBToken is ERC20, Ownable {
     modifier onlyWhitelistedSender(address _passFromAddress) {
         whitelistContract.whitelistFuncFrom(_passFromAddress); 
         _;
+    }
+
+    // Function to deploy new instance of whitelist
+    function deployNewWhitelist(address ownerAddress) private returns(address) {
+        Whitelist newWhitelist = new Whitelist(ownerAddress);
+        return address(newWhitelist);
     }
 
     // Transfer ERC20

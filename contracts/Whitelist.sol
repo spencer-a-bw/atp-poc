@@ -18,8 +18,8 @@ contract Whitelist is Ownable {
 
     mapping(address => bool) public generalWhitelist;
 
-    constructor() Ownable() {
-        addToWhitelist(msg.sender);
+    constructor(address _ownerAddress) Ownable() {
+        addToWhitelist(_ownerAddress);
     }
 
     // Add public address to whitelist
