@@ -32,8 +32,8 @@ contract DBToken is ERC20, Ownable {
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
     {
-        whitelistContract = Whitelist(deployNewWhitelist(msg.sender));
-        whitelistAddress = address(whitelistContract);
+        whitelistAddress = address(new Whitelist(msg.sender));
+        whitelistContract = Whitelist(whitelistAddress);
         _mint(msg.sender, _initialSupply * uint256(correctSupply));
     }
 
@@ -48,12 +48,6 @@ contract DBToken is ERC20, Ownable {
         _;
     }
 
-    // Function to deploy new instance of whitelist
-    function deployNewWhitelist(address ownerAddress) private returns(address) {
-        Whitelist newWhitelist = new Whitelist(ownerAddress);
-        return address(newWhitelist);
-    }
-
     // Transfer ERC20
     function transferToken(
         address _toAddress,
@@ -63,7 +57,7 @@ contract DBToken is ERC20, Ownable {
     onlyWhitelistedSender(msg.sender)
     returns(bool) 
     {    
-        _transfer(msg.sender, _toAddress, _amount  * uint256(correctSupply));
+        _transfer(msg.sender, _toAddress, _amount * uint256(correctSupply));
         return true;
     }
 }

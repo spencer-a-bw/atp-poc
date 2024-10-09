@@ -23,18 +23,19 @@ describe("DBToken unit testing...", function () {
     const whitelistAddress = await token.whitelistAddress();
     DBWhitelist = await ethers.getContractFactory("Whitelist");
     whitelist = await DBWhitelist.attach(whitelistAddress);
-    console.log(await whitelist.owner())
+    // console.log(await whitelist.owner())
 
     // Add investors to whitelist
-    await whitelist.connect(token.address).addToWhitelist(investorA.address);
-    await whitelist.connect(owner.address).addToWhitelist(investorB.address);
+    await whitelist.addToWhitelist(owner.address);
+    await whitelist.addToWhitelist(investorA.address);
+    await whitelist.addToWhitelist(investorB.address);
 
     console.log('Owner:', owner.address);
     console.log('Investor A:', investorA.address);
     console.log('Investor B:', investorB.address);
     console.log('Blocked address:', blockedAddress.address)
     console.log('Whitelist contract:', whitelist.address);
-    console.log('--VERIFY-- WHITELIST:', whitelistAddress);
+    console.log('--VERIFY WHITELIST--', whitelistAddress);
     console.log('Token Contract:', token.address);
     console.log('Whitelist - Owner:', await whitelist.connect(token.address).getWhitelist(owner.address));
     console.log('Whitelist - Investor A:', await whitelist.connect(token.address).getWhitelist(investorA.address));
@@ -42,26 +43,25 @@ describe("DBToken unit testing...", function () {
     console.log('Whitelist - Blocked Address:', await whitelist.connect(token.address).getWhitelist(blockedAddress.address));
   });
 
-  
   it("Should register and deploy with the appropriate tokenName, tokenSymbol, and initialSupply.", async function () {
     const _tokenName = await token.name();
     const _tokenSymbol = await token.symbol();
-    const _initialSupply = await token.totalSupply();
+    const _initialSupply = await token.totalSupply() / 10 ** 18;
     expect(_tokenName).to.equal(tokenName);
     expect(_tokenSymbol).to.equal(tokenSymbol);
     expect(_initialSupply).to.equal(initialSupply);
   });
 
   it("Should mint the initialSupply in the owner's public address.", async function () {
-    const _balanceOf = await token.balanceOf(owner.address);
+    const _balanceOf = await token.balanceOf(owner.address) / 10 ** 18;
     expect(_balanceOf).to.equal(initialSupply);
   });
 
   it("Only whitelisted accounts can transfer tokens.", async function () {
     await token.transferToken(investorA.address, transferAmount);
-    console.log(await token.balanceOf(investorA.address));
+    console.log(await token.balanceOf(investorA.address) / 10 ** 18);
     await token.connect(investorA).transferToken(investorB.address, transferAmount)
-    console.log(await token.balanceOf(investorB.address));
+    console.log(await token.balanceOf(investorB.address) / 10 ** 18);
     // await token.transferToken(blockedAddress.address, transferAmount);
   });
 

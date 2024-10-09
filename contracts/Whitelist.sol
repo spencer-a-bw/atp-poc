@@ -12,14 +12,21 @@
 
 pragma solidity ^0.8.26;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Whitelist is Ownable {
+contract Whitelist {
+
+    address whitelistOwner;
 
     mapping(address => bool) public generalWhitelist;
 
-    constructor(address _ownerAddress) Ownable() {
-        addToWhitelist(_ownerAddress);
+    constructor(address _ownerAddress) {
+       whitelistOwner = _ownerAddress;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == whitelistOwner);
+        _;
     }
 
     // Add public address to whitelist
