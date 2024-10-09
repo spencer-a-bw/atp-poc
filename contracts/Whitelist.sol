@@ -56,7 +56,7 @@ contract Whitelist {
     }
 
     // Return mapping value
-    function getWhitelist(address _address) public view returns(bool) {
+    function getWhitelist(address _address) public view onlyOwner returns(bool) {
         return generalWhitelist[_address];
     }
 }

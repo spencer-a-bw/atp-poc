@@ -19,22 +19,47 @@ import "./Whitelist.sol";
 
 contract DBToken is ERC20, Ownable {
 
-    Whitelist public whitelistContract;
+    Whitelist private whitelistContract;
     address public whitelistAddress;
-    uint256 private correctSupply = 10 ** uint256(decimals());
+
+    string public assetDescription;
+    string public issuerName;
+    uint256 public isinNumber;
+    uint256 public tokenPriceInEuro;
+    uint256 public nominalValue;
+    uint256 public maturityDate;
+    uint8 public yield;
+
+    uint256 private _decimals = 10 ** uint256(decimals());
 
     // Deployment and ERC20 registration
     constructor(
         string memory _tokenName,   
         string memory _tokenSymbol, 
-        uint256 _initialSupply
+        uint256 _initialSupply,
+        string memory _assetDescription,
+        string memory _issuerName,
+        uint256 _isinNumber,
+        uint256 _tokenPriceInEuro,
+        uint256 _nominalValue,
+        uint256 _maturityDate,
+        uint8 _yield
         )
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
     {
         whitelistAddress = address(new Whitelist(msg.sender));
         whitelistContract = Whitelist(whitelistAddress);
-        _mint(msg.sender, _initialSupply * uint256(correctSupply));
+
+        assetDescription = _assetDescription;
+        issuerName = _issuerName;
+        isinNumber = _isinNumber;
+        tokenPriceInEuro = _tokenPriceInEuro;
+        nominalValue = _nominalValue;
+        maturityDate = _maturityDate;
+        yield = _yield;
+
+        _mint(msg.sender, _initialSupply * uint256(_decimals));
     }
 
     // Whitelist modifiers to ensure transaction actors are whitelisted
@@ -57,7 +82,7 @@ contract DBToken is ERC20, Ownable {
     onlyWhitelistedSender(msg.sender)
     returns(bool) 
     {    
-        _transfer(msg.sender, _toAddress, _amount * uint256(correctSupply));
+        _transfer(msg.sender, _toAddress, _amount * uint256(_decimals));
         return true;
     }
 }
