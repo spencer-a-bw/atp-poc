@@ -60,4 +60,10 @@ contract DBToken is ERC20, Ownable {
         _transfer(msg.sender, _toAddress, _amount * uint256(correctSupply));
         return true;
     }
+
+    function getWhitelistAddress() public view onlyOwner returns(address) {
+        return whitelistAddress;
+    }
+
+
 }
