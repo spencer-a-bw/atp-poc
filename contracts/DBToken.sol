@@ -21,20 +21,25 @@ contract DBToken is ERC20, Ownable {
 
     Whitelist public whitelistContract;
     address public whitelistAddress;
+    string tokenName;
+    string tokenSymbol;
+    uint256 public tokenSupply;
     uint256 private correctSupply = 10 ** uint256(decimals());
 
     // Deployment and ERC20 registration
     constructor(
-        string memory _tokenName,   
-        string memory _tokenSymbol, 
-        uint256 _initialSupply
-        )
-        ERC20(_tokenName, _tokenSymbol)
+        string memory _tokenName,
+        string memory _tokenSymbol,
+        uint256 _tokenSupply
+    )
         Ownable()
     {
+        tokenName = _tokenName;
+        tokenSymbol = _tokenSymbol;
+        tokenSupply = _tokenSupply;
+
         whitelistAddress = address(new Whitelist(msg.sender));
         whitelistContract = Whitelist(whitelistAddress);
-        _mint(msg.sender, _initialSupply * uint256(correctSupply));
     }
 
     // Whitelist modifiers to ensure transaction actors are whitelisted
@@ -46,6 +51,21 @@ contract DBToken is ERC20, Ownable {
     modifier onlyWhitelistedSender(address _passFromAddress) {
         whitelistContract.whitelistFuncFrom(_passFromAddress); 
         _;
+    }
+
+    // Register bond
+    function registerBond() 
+    public view
+    ERC20(tokenName, tokenSymbol) 
+    onlyOwner 
+    returns(bool) {}
+
+    // Mint bond
+    function mint()
+    public
+    onlyOwner
+    returns(bool) {
+        _mint(msg.sender, tokenSupply);
     }
 
     // Transfer ERC20
