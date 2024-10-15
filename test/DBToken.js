@@ -7,6 +7,14 @@ describe("DBToken unit testing...", function () {
   const tokenName = "DB Token";
   const tokenSymbol = "DBT";
   const initialSupply = 1000;
+  const assetDescription = "";
+  const issuerName = "";
+  const isinNumber = 12345;
+  const tokenPriceEuro = 100;
+  const nominalValue = initialSupply * tokenPriceEuro;
+  const maturityDate = 365; // How do we intend on designing the math for maturity date?
+  const yield = 545;
+
   const transferAmount = 10;
 
 
@@ -16,7 +24,7 @@ describe("DBToken unit testing...", function () {
 
     // Deploy DBToken
     dbToken = await ethers.getContractFactory("DBToken");
-    token = await dbToken.deploy(tokenName, tokenSymbol, initialSupply);
+    token = await dbToken.deploy(tokenName, tokenSymbol, initialSupply, assetDescription, issuerName, isinNumber, tokenPriceEuro, nominalValue, maturityDate, yield);
     await token.deployed();
 
     // Get whitelist instance from DBToken deployment
@@ -37,10 +45,10 @@ describe("DBToken unit testing...", function () {
     console.log('Whitelist contract:', whitelist.address);
     console.log('--VERIFY WHITELIST--', whitelistAddress);
     console.log('Token Contract:', token.address);
-    console.log('Whitelist - Owner:', await whitelist.connect(token.address).getWhitelist(owner.address));
-    console.log('Whitelist - Investor A:', await whitelist.connect(token.address).getWhitelist(investorA.address));
-    console.log('Whitelist - Investor B:', await whitelist.connect(token.address).getWhitelist(investorB.address));
-    console.log('Whitelist - Blocked Address:', await whitelist.connect(token.address).getWhitelist(blockedAddress.address));
+    console.log('Whitelist - Owner:', await whitelist.connect(owner.address).getWhitelist(owner.address));
+    console.log('Whitelist - Investor A:', await whitelist.connect(owner.address).getWhitelist(investorA.address));
+    console.log('Whitelist - Investor B:', await whitelist.connect(owner.address).getWhitelist(investorB.address));
+    console.log('Whitelist - Blocked Address:', await whitelist.connect(owner.address).getWhitelist(blockedAddress.address));
   });
 
   it("Should register and deploy with the appropriate tokenName, tokenSymbol, and initialSupply.", async function () {

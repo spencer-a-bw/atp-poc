@@ -28,7 +28,7 @@ contract DBToken is ERC20, Ownable {
     uint256 public tokenPriceInEuro;
     uint256 public nominalValue;
     uint256 public maturityDate;
-    uint8 public yield;
+    uint16 public yield;
 
     uint256 private _decimals = 10 ** uint256(decimals());
 
@@ -43,13 +43,15 @@ contract DBToken is ERC20, Ownable {
         uint256 _tokenPriceInEuro,
         uint256 _nominalValue,
         uint256 _maturityDate,
-        uint8 _yield
+        uint16 _yield
         )
         ERC20(_tokenName, _tokenSymbol)
         Ownable()
     {
         whitelistAddress = address(new Whitelist(msg.sender));
         whitelistContract = Whitelist(whitelistAddress);
+
+        whitelistContract.addToWhitelist(msg.sender);
 
         assetDescription = _assetDescription;
         issuerName = _issuerName;
@@ -77,7 +79,7 @@ contract DBToken is ERC20, Ownable {
     function transferToken(
         address _toAddress,
         uint256 _amount
-    ) public 
+        ) public 
     onlyWhitelistedRecipient(_toAddress) 
     onlyWhitelistedSender(msg.sender)
     returns(bool) 
