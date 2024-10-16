@@ -15,7 +15,6 @@ pragma solidity ^0.8.26;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Whitelist.sol";
-// import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract DBToken is ERC20, Ownable {
 
@@ -50,8 +49,6 @@ contract DBToken is ERC20, Ownable {
     {
         whitelistAddress = address(new Whitelist(msg.sender));
         whitelistContract = Whitelist(whitelistAddress);
-
-        // whitelistContract.addToWhitelist(msg.sender);
 
         assetDescription = _assetDescription;
         issuerName = _issuerName;
@@ -88,6 +85,7 @@ contract DBToken is ERC20, Ownable {
         return true;
     }
 
+    // Returns the whitelist contract address of the correlated token whitelist
     function getWhitelistAddress() public view returns(address) {
         return whitelistAddress;
     }

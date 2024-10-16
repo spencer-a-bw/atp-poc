@@ -12,8 +12,6 @@
 
 pragma solidity ^0.8.26;
 
-// import "@openzeppelin/contracts/access/Ownable.sol";
-
 contract Whitelist {
 
     address whitelistOwner;
@@ -55,7 +53,7 @@ contract Whitelist {
         require(generalWhitelist[_toAddress], "RECIPIENT_NOT_IN_WHITELIST");
     }
 
-    // Return mapping value
+    // Return mapping boolean value of public address
     function getWhitelist(address _address) public view onlyOwner returns(bool) {
         return generalWhitelist[_address];
     }
