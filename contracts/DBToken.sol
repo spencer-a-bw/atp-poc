@@ -51,7 +51,7 @@ contract DBToken is ERC20, Ownable {
         whitelistAddress = address(new Whitelist(msg.sender));
         whitelistContract = Whitelist(whitelistAddress);
 
-        whitelistContract.addToWhitelist(msg.sender);
+        // whitelistContract.addToWhitelist(msg.sender);
 
         assetDescription = _assetDescription;
         issuerName = _issuerName;
@@ -88,7 +88,7 @@ contract DBToken is ERC20, Ownable {
         return true;
     }
 
-    function getWhitelistAddress() public view onlyOwner returns(address) {
+    function getWhitelistAddress() public view returns(address) {
         return whitelistAddress;
     }
 }
