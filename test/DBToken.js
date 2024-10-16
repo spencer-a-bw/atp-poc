@@ -4,16 +4,18 @@ const { ethers } = require("hardhat");
 describe("DBToken unit testing...", function () {
   let dbToken, token, DBWhitelist, whitelist, owner, 
   issuingAgent, investorA, investorB, blockedAddress;
-  const tokenName = "DB Token";
-  const tokenSymbol = "DBT";
+
+  // Register test token variables
+  const tokenName = "Test Token";
+  const tokenSymbol = "Test";
   const initialSupply = 1000;
   const assetDescription = "";
   const issuerName = "";
   const isinNumber = 12345;
   const tokenPriceEuro = 100;
   const nominalValue = initialSupply * tokenPriceEuro;
-  const maturityDate = 365; // How do we intend on designing the math for maturity date?
-  const yield = 545;
+  const maturityDate = 365; // Need to fix the math measurement and format for testing
+  const yield = 1;
 
   const transferAmount = 10;
 
@@ -31,7 +33,6 @@ describe("DBToken unit testing...", function () {
     const whitelistAddress = await token.whitelistAddress();
     DBWhitelist = await ethers.getContractFactory("Whitelist");
     whitelist = await DBWhitelist.attach(whitelistAddress);
-    // console.log(await whitelist.owner())
 
     // Add investors to whitelist
     await whitelist.addToWhitelist(owner.address);
@@ -43,7 +44,6 @@ describe("DBToken unit testing...", function () {
     console.log('Investor B:', investorB.address);
     console.log('Blocked address:', blockedAddress.address)
     console.log('Whitelist contract:', whitelist.address);
-    console.log('--VERIFY WHITELIST--', whitelistAddress);
     console.log('Token Contract:', token.address);
     console.log('Whitelist - Owner:', await whitelist.connect(owner.address).getWhitelist(owner.address));
     console.log('Whitelist - Investor A:', await whitelist.connect(owner.address).getWhitelist(investorA.address));
@@ -77,17 +77,7 @@ describe("DBToken unit testing...", function () {
   //   await expect(token.connect(issuingAgent).mint()).to.be.revertedWith('Ownable: caller is not the owner');
   // });
 
-  // it("Should transfer tokens between accounts.", async function () {
-  //   await token.transferToken(investorA.address, transferAmount);
-
-  //   const _balanceOfInvestorA = await token.balanceOf(investorA.address);
-  //   const _balanceOfOwner = await token.balanceOf(owner.address);
-
-  //   console.log("Investor A balance:", _balanceOfInvestorA);
-  //   console.log("Owner balance:", _balanceOfOwner);
-
-  //   expect(_balanceOfInvestorA.toNumber()).to.equal(transferAmount);
-  //   expect(_balanceOfOwner.toNumber()).to.equal(initialSupply - transferAmount);
+  // it("Should not allow transfer of tokens to or from a non-whitelisted public address.", async function () {
   // });
 
   // it("Should not allow transfer of tokens from an account with insufficient.", async function () {

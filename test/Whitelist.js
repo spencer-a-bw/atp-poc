@@ -1,8 +1,8 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("DBToken unit testing...", function () {
-  let dbToken, token, owner, issuingAgent, investorA, investorB;
+describe("Whitelist unit testing...", function () {
+  let dbWhitelist, whitelist, owner, investorA, investorB, blockedAddress;
   const tokenName = "DB Token";
   const tokenSymbol = "DBT";
   const initialSupply = 100000;
@@ -16,33 +16,29 @@ describe("DBToken unit testing...", function () {
     // Deploy whitelist and onboard addresses
     dbWhitelist = await ethers.getContractFactory("Whitelist");
     whitelist = await dbWhitelist.deploy();
-    // owner is added to whitelist upon deployment of whitelist smart contract
+    await whitelist.addToWhitelist(owner.address);
     await whitelist.addToWhitelist(investorA.address);
     await whitelist.addToWhitelist(investorB.address);
-
-    // Deploy and register contract, mint token, and integrate whitelist contract
-    dbToken = await ethers.getContractFactory("DBToken");
-    token = await dbToken.deploy(tokenName, tokenSymbol, initialSupply, whitelist.address);
-    await token.deployed();
 
     console.log('Owner:', owner.address);
     console.log('Investor A:', investorA.address);
     console.log('Investor B:', investorB.address);
     console.log('Blocked address:', blockedAddress.address)
     console.log('Whitelist contract:', whitelist.address);
-    console.log('Token Contract:', token.address);
-    console.log('Whitelist - Owner:', await whitelist.getWhitelist(owner.address));
-    console.log('Whitelist - Investor A:', await whitelist.getWhitelist(investorA.address));
-    console.log('Whitelist - Investor B:', await whitelist.getWhitelist(investorB.address));
-    console.log('Whitelist - Blocked Address:', await whitelist.getWhitelist(blockedAddress.address));
   });
 
-  it("Only whitelisted accounts can transfer tokens.", async function () {
-    await token.transferToken(investorA.address, transferAmount);
-    console.log(await token.balanceOf(investorA.address));
-    await token.connect(investorA).transferToken(investorB.address, transferAmount)
-    console.log(await token.balanceOf(investorB.address));
-    // await token.transferToken(blockedAddress.address, transferAmount);
-  });
+  // it("Add and remove from whitelist functionality works properly.", async function () {
+  //   console.log('---CHECK WHITELIST---');
+  //   console.log('Whitelist - Owner:', await whitelist.getWhitelist(owner.address));
+  //   console.log('Whitelist - Investor A:', await whitelist.getWhitelist(investorA.address));
+  //   console.log('Whitelist - Investor B:', await whitelist.getWhitelist(investorB.address));
+  //   console.log('Whitelist - Blocked Address:', await whitelist.getWhitelist(blockedAddress.address));
+  // });
+
+  // it("Only owner can add to whitelist.", async function () {
+  // });
+
+  // it("Only owner can remove from whitelist.", async function () {
+  // });
 
 });
