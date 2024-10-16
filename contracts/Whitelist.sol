@@ -16,7 +16,9 @@ contract Whitelist {
 
     address whitelistOwner;
 
-    mapping(address => bool) public generalWhitelist;
+    mapping(address => bool) public registrarWhitelist;
+    mapping(address => bool) public issuerWhitelist;
+    mapping(address => bool) public investorWhitelist;
 
     constructor(address _ownerAddress) {
        whitelistOwner = _ownerAddress;
@@ -27,34 +29,33 @@ contract Whitelist {
         _;
     }
 
-    // Add public address to whitelist
-    function addToWhitelist(address addAddress) 
+    // ---Registrar Whitelist---
+    function addRegistrarWhitelist(address addAddress) 
     public onlyOwner
     {
-       generalWhitelist[addAddress] = true;
+       registrarWhitelist[addAddress] = true;
     }
 
-    // Remove public address from whitelist
-    function removeFromWhitelist(address removeAddress)
+    function removeRegistrarWhitelist(address removeAddress)
     public onlyOwner
     {
-        generalWhitelist[removeAddress] = false;
+        registrarWhitelist[removeAddress] = false;
     }
     
     // Ensure transaction sender is whitelisted
     function whitelistFuncFrom(address _fromAddress) external view
     {
-        require(generalWhitelist[_fromAddress], "SENDER_NOT_IN_WHITELIST");
+        require(registrarWhitelist[_fromAddress], "SENDER_NOT_IN_WHITELIST");
     }
 
     // Ensure transaction recipient is whitelisted
     function whitelistFuncTo(address _toAddress) external view
     {
-        require(generalWhitelist[_toAddress], "RECIPIENT_NOT_IN_WHITELIST");
+        require(registrarWhitelist[_toAddress], "RECIPIENT_NOT_IN_WHITELIST");
     }
 
     // Return mapping boolean value of public address
-    function getWhitelist(address _address) public view onlyOwner returns(bool) {
-        return generalWhitelist[_address];
+    function getregistrarWhitelist(address _address) public view onlyOwner returns(bool) {
+        return registrarWhitelist[_address];
     }
 }
